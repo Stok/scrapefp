@@ -173,5 +173,6 @@ print("<div>Le montant total selon le forfait est donc de : %s</div>" % result[4
 print("<div>lagent a demande a etre rembourse pour %s repas.</div>" % result[5])
 print("<div>Les pourcentages sont donc reajustes : %s</div>" % list(map(lambda x : 100 * x, result[6])))
 print("<div>Le montant plafonne est : %s</div>" % result[7])
+print("<div>Calcul termine. Bonne journee!</div>")
 print("</body>")
 print("</html>")
