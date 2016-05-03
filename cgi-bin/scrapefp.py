@@ -77,7 +77,7 @@ def getValueTable(dateTable, url, valueID, countryCode):
                 try:
                         valueTable.append(tempDict[rd])
                 except KeyError:
-                        tempDict[rd] = 100#getValueAtDate(url, countryCode, rd, valueID)
+                        tempDict[rd] = getValueAtDate(url, countryCode, rd, valueID)
                         valueTable.append(tempDict[rd])
         return valueTable
 
@@ -149,10 +149,16 @@ def CalculateAmountDue(departureDate, returnDate, countryCode, mealNumberCap):
 print("Content-type:text/html\n\n")
 print("")
 
-departure_date = form.getvalue('departure_date')
-return_date  = form.getvalue('return_date')
-country_code = form.getvalue('country_code')
-meal_cap = form.getvalue('meal_cap')
+#departure_date = form.getvalue('departure_date')
+#return_date  = form.getvalue('return_date')
+#country_code = form.getvalue('country_code')
+#meal_cap = form.getvalue('meal_cap')
+
+#For testing
+#departure_date = "01/04/16_10:00"
+#return_date  = "04/04/16_20:00"
+#country_code = "GB"
+#meal_cap = "5"
 
 departureDate = dt.strptime(departure_date, "%d/%m/%y_%H:%M")
 returnDate = dt.strptime(return_date, "%d/%m/%y_%H:%M")
