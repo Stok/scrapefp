@@ -149,10 +149,10 @@ def CalculateAmountDue(departureDate, returnDate, countryCode, mealNumberCap):
 print("Content-type:text/html\n\n")
 print("")
 
-#departure_date = form.getvalue('departure_date')
-#return_date  = form.getvalue('return_date')
-#country_code = form.getvalue('country_code')
-#meal_cap = form.getvalue('meal_cap')
+departure_date = form.getvalue('departure_date')
+return_date  = form.getvalue('return_date')
+country_code = form.getvalue('country_code')
+meal_cap = form.getvalue('meal_cap')
 
 #For testing
 #departure_date = "01/04/16_10:00"
