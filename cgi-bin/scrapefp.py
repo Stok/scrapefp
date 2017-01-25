@@ -2,7 +2,7 @@
 #
 
 import cgi, cgitb
-import requests
+import requests, operator, functools
 from datetime import datetime as dt
 from datetime import timedelta
 from bs4 import BeautifulSoup
@@ -19,11 +19,7 @@ def getCountryCodes(url):
         soup = BeautifulSoup(content, 'html.parser')
         countriesRaw = soup.find_all('option')
 
-        allCountries = []
-        for c in countriesRaw :
-                allCountries.append((c.getText(), c.get('value')))
-        
-        return allCountries
+        return [(c.getText(), c.get('value')) for c in allCountries]
 
 def getChangeDates(url, countryCode) :
         #This part gets the dates that the rate got changed
@@ -34,11 +30,7 @@ def getChangeDates(url, countryCode) :
         soup = BeautifulSoup(content, 'html.parser')
 
         changeDatesRaw = soup.find(id='edit-date').find_all('option')
-        changeDates = []
-        for date in changeDatesRaw :
-                changeDates.append(date.get('value'))
-
-        return changeDates
+        return [date.get('value') for date in changeDatesRaw]
 
 
 def getValueAtDate(url, countryCode, date, valueID):
@@ -51,9 +43,7 @@ def getValueAtDate(url, countryCode, date, valueID):
         content = r.text.encode('ascii', 'ignore')
 
         soup = BeautifulSoup(content, 'html.parser')
-        value = float(soup.find(id=valueID).get('value').replace(",", "."))
-
-        return value
+        return float(soup.find(id=valueID).get('value').replace(",", "."))
 
 def makeDateTable(departureDate, returnDate):
         interval = (returnDate.replace(hour = 0) - departureDate.replace(hour = 0)).days
@@ -61,16 +51,11 @@ def makeDateTable(departureDate, returnDate):
         return relevantDates
 
 def getRefDate(refDates, travelDate):
-        for rd in refDates:
-                rddt = dt.strptime(rd, "%Y-%m-%d %H:%M:%S")
-                if travelDate >= rddt:
-                        return rddt
+        return [dt.strptime(rd, "%Y-%m-%d %H:%M:%S") for rd in redDates if travelDate >= dt.strptime(rd, "%Y-%m-%d %H:%M:%S")]
 
 def getValueTable(dateTable, url, valueID, countryCode):
         refDates = getChangeDates(url, countryCode)
-        refDateTable = []
-        for d in dateTable:
-                refDateTable.append(getRefDate(refDates, d))
+        refDateTable = [refDateTable.append(getRefDate(refDates, d)) for d in dateTable]
         valueTable = []
         tempDict = dict()
         for rd in refDateTable:
@@ -133,16 +118,14 @@ def CalculateAmountDue(departureDate, returnDate, countryCode, mealNumberCap):
         weights = getWeights(dateTable, departureDate, returnDate, 10000)
         
         table = zip(baremeTable, tauxTable, weights)
-        amountDue = 0.0
-        for t in table:
-                amountDue += t[0] * t[1] * t[2]
+        
+        amountDue = sum(functools.reduce(mul, t) for t in table)
         
         newWeights = getWeights(dateTable, departureDate, returnDate, mealNumberCap)
         
         table2 = zip(baremeTable, tauxTable, newWeights)
-        amountDue2 = 0.0
-        for t in table2:
-                amountDue2 += t[0] * t[1] * t[2]
+        amountDue2 = sum(functools.reduce(mul, t) for t in table2)
+        
         return [dateTable, baremeTable, tauxTable, weights, amountDue, mealNumberCap, newWeights, amountDue2]
 
 
